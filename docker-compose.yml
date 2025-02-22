@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  mlflow_server:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile-mlflow
+    container_name: mlflow_server
+    image: mlflow_server
+    ports:
+      - 5000:5000
