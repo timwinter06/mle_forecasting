@@ -86,3 +86,6 @@ target/
 
 # git-setup.sh file
 git-setup.sh
+
+# Pickle files
+*.pkl
