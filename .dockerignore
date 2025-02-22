@@ -1,0 +1,13 @@
+data/raw/*
+data/interim/*
+data/processed/*
+log/**/
+notebooks/
+reports/
+**/__pycache__/
+.ipynb_checkpoints/
+.pytest_cache/
+.env
+.git/
+.idea/
+.vscode/

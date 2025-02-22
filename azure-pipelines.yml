@@ -1,0 +1,78 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+trigger:
+  branches:
+    include:
+    - main
+    - prd
+    - test
+    - dev
+    - acc
+  paths:
+    include:
+    - src/*
+    - Dockerfile
+    - azure-pipelines.yml
+    - pyproject.toml
+
+variables:
+    - group: 'mle_forecasting'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Linting
+  jobs:
+  - job: Lint
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.11.x'
+        addToPath: true
+        architecture: 'x64'
+    - script: |
+        pip install --upgrade pip
+        pip install -e .[lint]
+        ruff check --line-length=120 .
+      name: ruff
+      displayName: 'ruff check'
+
+- stage: Test
+  jobs:
+  - job: Test
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.11.x'
+        addToPath: true
+        architecture: 'x64'
+    - script: |
+        pip install --upgrade pip
+        pip install setuptools wheel
+        pip install -e .
+        pip install pytest pytest-cov
+      name: install
+      displayName: 'Install packages'
+
+    - script: |
+        python -m pytest --junitxml=junit/test-results.xml --cov=src --cov-report xml
+      name: run_tests
+      displayName: 'Run tests'
+      condition: succeeded()
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/test-*.xml'
+        testRunTitle: 'Publish test results for Python $(python.version)'
+      displayName: 'Publish test results'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+      displayName: 'Publish coverage results'

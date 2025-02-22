@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+# Ref.: https://packaging.python.org/en/latest/specifications/declaring-project-metadata/#declaring-project-metadata
+[project]
+name = "mle_forecasting"
+version = "0.0.1"
+description = "Include description here"
+readme = "README.md"
+requires-python = ">=3.11"
+maintainers = [
+    { name = "Tim Winter", email = "timwinter06@gmail.com" },
+]
+
+# Ref.: https://pypi.org/classifiers/
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11"
+]
+
+# add your packages in here, for example "numpy==2.2.2",
+dependencies = [
+    
+]
+
+
+[project.optional-dependencies]
+lint = ["ruff==0.9.3", "pre-commit==4.1.0"]
+test = ["pytest==8.3.4", "pytest-cov==6.0.0"]
+type_check = ["mypy"]
+
+# Ref.: https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#setuptools-specific-configuration
+[tool.setuptools.packages.find]
+where = ["src"]  # List of folders that contain packages.
+
+[tool.ruff]
+fix = true                           # Automatically fix issues
+line-length = 120                    # Enforce max line length (optional)
+exclude = ["build/", "dist/"]        # Ignore certain directories (optional)
+
+[tool.ruff.lint]
+select = [
+    "F",  # pyflakes rules
+    "E",  # pycodestyle error rules
+    "W",  # pycodestyle warning rules
+    "B",  # flake8-bugbear rules
+    "I",  # isort rules
+]
+
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+junit_suite_name = "src"
+junit_family = "xunit2"
+addopts = [
+    "--junitxml=junit/test-results.xml",
+    "-s",
+    "--ignore-glob=*/__init__.py"
+]
+norecursedirs = ["*/__init__.py"]
