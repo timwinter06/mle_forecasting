@@ -1,5 +1,6 @@
 """Module for training, evaluating and saving a random forest model."""
 
+import logging
 import math
 import pickle
 from typing import Dict
@@ -13,7 +14,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from preprocess import Preprocesser
-from settings import DATA_PATH, MODEL_PATH
+from settings import DATA_PATH
+
+logging.basicConfig(level=logging.INFO)
 
 mlflow.set_tracking_uri(uri="http://localhost:5000")
 mlflow.set_experiment("Training forecasting model.")
@@ -115,10 +118,12 @@ def track_with_mlflow(
 
 if __name__ == "__main__":
     # Load train/test data
+    logging.info("Loading data")
     preprocesser = Preprocesser(file_path=DATA_PATH)
     train_x, train_y, test_x, test_y = preprocesser()
 
     # Train model
+    logging.info("Training model")
     params = {"n_estimators": 100, "max_features": round(len(train_x.columns) / 3), "max_depth": len(train_x.columns)}
     model_trainer = RFModelTrainer(
         n_estimators=params["n_estimators"], max_features=params["max_features"], max_depth=params["max_depth"]
@@ -130,7 +135,7 @@ if __name__ == "__main__":
     print(metrics)
 
     # Save model
-    model_trainer.save(MODEL_PATH)
+    # model_trainer.save(MODEL_PATH)
 
-    # Track model with MLflow
+    # Track and register model with MLflow
     track_with_mlflow(model_trainer.model, params, metrics, train_x)
