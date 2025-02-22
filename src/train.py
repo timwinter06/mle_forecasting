@@ -2,6 +2,7 @@ import math
 import pickle
 from typing import Dict
 
+import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
@@ -29,25 +30,25 @@ class RFModelTrainer:
         """
         self.model.fit(x_train, y_train)
 
-    def predict(self, x_test: pd.DataFrame) -> pd.DataFrame:
+    def predict(self, x_test: pd.DataFrame) -> np.ndarray:
         """Predict the labels for the test data.
 
         Args:
             x_test (pd.DataFrame): The test data.
 
         Returns:
-            pd.DataFrame: The predicted labels.
+            np.ndarray: The predicted labels.
         """
         return self.model.predict(x_test)
 
-    def predict_units(self, x_test: pd.DataFrame) -> pd.DataFrame:
+    def predict_units(self, x_test: pd.DataFrame) -> int:
         """Predict the units by coverting the log to units.
 
         Args:
             x_test (pd.DataFrame): The test data.
 
         Returns:
-            pd.DataFrame: The predicted units.
+            int: The predicted units.
         """
         return int(math.exp(self.predict(x_test)))
 
