@@ -4,13 +4,19 @@ import math
 import pickle
 from typing import Dict
 
+import mlflow
+import mlflow.sklearn
 import numpy as np
 import pandas as pd
+from mlflow.models import infer_signature
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from preprocess import Preprocesser
 from settings import DATA_PATH, MODEL_PATH
+
+mlflow.set_tracking_uri(uri="http://127.0.0.1:8080")
+mlflow.set_experiment("MLflow Quickstart")
 
 
 class RFModelTrainer:
@@ -82,14 +88,40 @@ class RFModelTrainer:
             pickle.dump(self.model, file)
 
 
+def track_with_mlflow(
+    model: RFModelTrainer, params: Dict[str, int], metrics: Dict[str, float], x_train: pd.DataFrame
+) -> None:
+    """Track the model with MLflow.
+
+    Args:
+        model (RFModelTrainer): The model to track.
+        params (Dict[str, int]): The parameters to track.
+        metrics (Dict[str, float]): The metrics to track.
+    """
+    with mlflow.start_run():
+        mlflow.log_params(params)
+        mlflow.log_metrics(metrics)
+        mlflow.set_tag("Forecast model", "Random Forest")
+
+        signature = infer_signature(x_train, model.predict(x_train))
+        _ = mlflow.sklearn.log_model(
+            sk_model=model,
+            artifact_path="forecast_model",
+            signature=signature,
+            input_example=x_train,
+            registered_model_name="tracking-quickstart",
+        )
+
+
 if __name__ == "__main__":
     # Load train/test data
     preprocesser = Preprocesser(file_path=DATA_PATH)
     train_x, train_y, test_x, test_y = preprocesser()
 
     # Train model
+    params = {"n_estimators": 100, "max_features": round(len(train_x.columns) / 3), "max_depth": len(train_x.columns)}
     model_trainer = RFModelTrainer(
-        n_estimators=100, max_features=round(len(train_x.columns) / 3), max_depth=len(train_x.columns)
+        n_estimators=params["n_estimators"], max_features=params["max_features"], max_depth=params["max_depth"]
     )
     model_trainer.train(train_x, train_y)
 
@@ -99,3 +131,6 @@ if __name__ == "__main__":
 
     # Save model
     model_trainer.save(MODEL_PATH)
+
+    # Track model with MLflow
+    track_with_mlflow(model_trainer.model, params, metrics, train_x)
