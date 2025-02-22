@@ -14,4 +14,3 @@ COPY data/raw/dataset.csv data/raw/dataset.csv
 
 # Set the entrypoint to run the main script
 CMD ["python", "src/train.py"]
-

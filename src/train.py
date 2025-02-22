@@ -18,9 +18,6 @@ from settings import DATA_PATH
 
 logging.basicConfig(level=logging.INFO)
 
-mlflow.set_tracking_uri(uri="http://localhost:5000")
-mlflow.set_experiment("Training forecasting model.")
-
 
 class RFModelTrainer:
     """Class for training a random forest model."""
@@ -117,6 +114,8 @@ def track_with_mlflow(
 
 
 if __name__ == "__main__":
+    mlflow.set_tracking_uri(uri="http://mlflow_server:5050")
+    mlflow.set_experiment("TEST2")
     # Load train/test data
     logging.info("Loading data")
     preprocesser = Preprocesser(file_path=DATA_PATH)
