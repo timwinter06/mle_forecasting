@@ -15,8 +15,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from preprocess import Preprocesser
 from settings import DATA_PATH, MODEL_PATH
 
-mlflow.set_tracking_uri(uri="http://127.0.0.1:8080")
-mlflow.set_experiment("MLflow Quickstart")
+mlflow.set_tracking_uri(uri="http://localhost:5000")
+mlflow.set_experiment("Training forecasting model.")
 
 
 class RFModelTrainer:
@@ -109,7 +109,7 @@ def track_with_mlflow(
             artifact_path="forecast_model",
             signature=signature,
             input_example=x_train,
-            registered_model_name="tracking-quickstart",
+            registered_model_name="random_forest_regressor",
         )
 
 
