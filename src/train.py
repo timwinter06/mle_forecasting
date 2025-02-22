@@ -53,7 +53,7 @@ class RFModelTrainer:
         Returns:
             int: The predicted units.
         """
-        return int(math.exp(self.predict(x_test)))
+        return int(math.exp(self.predict(x_test)[0]))
 
     def evaluate(self, x_test: pd.DataFrame, y_test: pd.DataFrame) -> Dict[str, float]:
         """Evaluate the model.
