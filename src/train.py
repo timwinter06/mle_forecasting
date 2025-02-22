@@ -78,53 +78,6 @@ class RFModelTrainer:
             pickle.dump(self.model, file)
 
 
-class RFModelInference:
-    """Class for inference with a random forest model."""
-
-    def __init__(self, model_path: str) -> None:
-        with open(model_path, "rb") as file:
-            self.model = pickle.load(file)
-
-    def predict(self, x_test: pd.DataFrame) -> pd.DataFrame:
-        """Predict the labels for the test data.
-
-        Args:
-            x_test (pd.DataFrame): The test data.
-
-        Returns:
-            pd.DataFrame: The predicted labels.
-        """
-        return self.model.predict(x_test)
-
-    def predict_units(self, x_test: pd.DataFrame) -> pd.DataFrame:
-        """Predict the units by coverting the log to units.
-
-        Args:
-            x_test (pd.DataFrame): The test data.
-
-        Returns:
-            pd.DataFrame: The predicted units.
-        """
-        return int(math.exp(self.predict(x_test)))
-
-    def evaluate(self, x_test: pd.DataFrame, y_test: pd.DataFrame) -> Dict[str, float]:
-        """Evaluate the model.
-
-        Args:
-            x_test (pd.DataFrame): The test data.
-            y_test (pd.DataFrame): The test labels.
-
-        Returns:
-            Dict[str, float]: The metrics.
-        """
-        predictions = self.predict(x_test)
-        metrics = {
-            "MAE": mean_absolute_error(y_test, predictions),
-            "MSE": mean_squared_error(y_test, predictions),
-        }
-        return metrics
-
-
 if __name__ == "__main__":
     FILE_PATH = "./data/raw/dataset.csv"
     df = pd.read_csv(FILE_PATH, sep=";", header=0)
@@ -137,15 +90,10 @@ if __name__ == "__main__":
     train_x, train_y = split_x_y(train_df_lag)
     test_x, test_y = split_x_y(test_df_lag)
 
-    # model = RFModelTrainer(
-    #     n_estimators=100, max_features=round(len(train_x.columns) / 3), max_depth=len(train_x.columns)
-    # )
+    model = RFModelTrainer(
+        n_estimators=100, max_features=round(len(train_x.columns) / 3), max_depth=len(train_x.columns)
+    )
 
-    # model.train(train_x, train_y)
-    # metrics = model.evaluate(test_x, test_y)
-    # print(metrics)
-
-    MODEL_PATH = "./models/forecasting_model.pkl"
-    model = RFModelInference(MODEL_PATH)
+    model.train(train_x, train_y)
     metrics = model.evaluate(test_x, test_y)
     print(metrics)
