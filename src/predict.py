@@ -8,8 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-from preprocess import Preprocesser
-from settings import DATA_PATH, MODEL_PATH
+from settings import MODEL_PATH
 
 
 class ModelPredictor:
@@ -45,7 +44,7 @@ class ModelPredictor:
         Returns:
             int: The predicted units.
         """
-        return int(math.exp(self.predict(x_test)))
+        return int(math.exp(self.predict(x_test)[0]))
 
     def evaluate(self, x_test: pd.DataFrame, y_test: pd.DataFrame) -> Dict[str, float]:
         """Evaluate the model.
@@ -66,11 +65,28 @@ class ModelPredictor:
 
 
 if __name__ == "__main__":
-    # Load train/test data
-    preprocesser = Preprocesser(file_path=DATA_PATH)
-    _, _, test_x, test_y = preprocesser()
+    columns = [
+        "StoreCount",
+        "ShelfCapacity",
+        "PromoShelfCapacity",
+        "IsPromo",
+        "ItemNumber",
+        "CategoryCode",
+        "GroupCode",
+        "month",
+        "weekday",
+        "UnitSales_-7",
+        "UnitSales_-14",
+        "UnitSales_-21",
+    ]
 
+    custom_example = pd.DataFrame(
+        data=[
+            (781, 12602.000, 4922, True, 8646, 7292, 5494, 11, 3, 6.190, 6.217, 6.075),
+        ],
+        columns=columns,
+    )
     model = ModelPredictor(MODEL_PATH)
+    units = model.predict_units(custom_example)
 
-    metrics = model.evaluate(test_x, test_y)
-    print(metrics)
+    print(f"Model predicts {units} units.")
