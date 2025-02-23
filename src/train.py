@@ -2,6 +2,7 @@
 
 import logging
 import math
+import os
 import pickle
 from typing import Dict
 
@@ -14,7 +15,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from preprocess import Preprocesser
-from settings import DATA_PATH
+from settings import DATA_PATH, EXPERIMENT_NAME
 
 logging.basicConfig(level=logging.INFO)
 
@@ -114,27 +115,25 @@ def track_with_mlflow(
 
 
 if __name__ == "__main__":
-    mlflow.set_tracking_uri(uri="http://mlflow_server:5050")
-    mlflow.set_experiment("TEST2")
-    # Load train/test data
-    logging.info("Loading data")
+    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
+    logging.info(f"MLFLOW_TRACKING_URI: {MLFLOW_TRACKING_URI}")
+    mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
+    mlflow.set_experiment(EXPERIMENT_NAME)
+
+    logging.info("Loading data...")
     preprocesser = Preprocesser(file_path=DATA_PATH)
     train_x, train_y, test_x, test_y = preprocesser()
 
-    # Train model
-    logging.info("Training model")
+    logging.info("Training model...")
     params = {"n_estimators": 100, "max_features": round(len(train_x.columns) / 3), "max_depth": len(train_x.columns)}
     model_trainer = RFModelTrainer(
         n_estimators=params["n_estimators"], max_features=params["max_features"], max_depth=params["max_depth"]
     )
     model_trainer.train(train_x, train_y)
 
-    # Evaluate model
+    logging.info("Evaluating model...")
     metrics = model_trainer.evaluate(test_x, test_y)
     print(metrics)
 
-    # Save model
-    # model_trainer.save(MODEL_PATH)
-
-    # Track and register model with MLflow
+    logging.info("Tracking model with MLflow...")
     track_with_mlflow(model_trainer.model, params, metrics, train_x)

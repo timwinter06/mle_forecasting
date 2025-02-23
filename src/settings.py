@@ -8,6 +8,9 @@ MODEL_PATH = "./models/forecasting_model.pkl"
 NUMBER_OF_LAGS = [7, 14, 21]
 FEATURE_TO_LAG = "UnitSales"
 
+# MLFlow settings
+EXPERIMENT_NAME = "unit_sales_forecasting"
+
 # Data columns
 COLUMNS = [
     "StoreCount",
