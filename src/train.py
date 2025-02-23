@@ -105,17 +105,17 @@ def track_with_mlflow(
         mlflow.set_tag("Forecast model", "Random Forest")
 
         signature = infer_signature(x_train, model.predict(x_train))
+        # Log model
         _ = mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="forecast_model",
             signature=signature,
-            input_example=x_train,
             registered_model_name="random_forest_regressor",
         )
 
 
 if __name__ == "__main__":
-    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
+    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
     logging.info(f"MLFLOW_TRACKING_URI: {MLFLOW_TRACKING_URI}")
     mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
     mlflow.set_experiment(EXPERIMENT_NAME)
