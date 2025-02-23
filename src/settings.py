@@ -10,6 +10,8 @@ FEATURE_TO_LAG = "UnitSales"
 
 # MLFlow settings
 EXPERIMENT_NAME = "unit_sales_forecasting"
+MODEL_NAME = "random_forest_regressor"
+MODEL_VERSION = "latest"
 
 # Data columns
 COLUMNS = [

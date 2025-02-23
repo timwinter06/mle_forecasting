@@ -1,27 +1,34 @@
 """Module for making predictions."""
 
 import math
+import os
 import pickle
 from typing import Dict
 
+import mlflow
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-from settings import MODEL_PATH
+# from settings import MODEL_PATH
+from settings import MODEL_NAME, MODEL_VERSION
 
 
 class ModelPredictor:
     """Class for making predictions"""
 
-    def __init__(self, model_path: str) -> None:
+    def __init__(self, model_path: str, use_mlflow: bool = False) -> None:
         """Initialize the predictor.
 
         Args:
             model_path (str): The path to the model.
+            use_mlflow (bool, optional): Whether to use MLflow. Defaults to False.
         """
-        with open(model_path, "rb") as file:
-            self.model = pickle.load(file)
+        if use_mlflow:
+            self.model = mlflow.sklearn.load_model(model_path)
+        else:
+            with open(model_path, "rb") as file:
+                self.model = pickle.load(file)
 
     def predict(self, x_test: pd.DataFrame) -> np.ndarray:
         """Predict the labels for the test data.
@@ -32,8 +39,7 @@ class ModelPredictor:
         Returns:
             np.ndarray: The predicted labels.
         """
-        predictions = self.model.predict(x_test)
-        return predictions
+        return self.model.predict(x_test)
 
     def predict_units(self, x_test: pd.DataFrame) -> int:
         """Predict the units by converting the log to units.
@@ -86,7 +92,19 @@ if __name__ == "__main__":
         ],
         columns=columns,
     )
-    model = ModelPredictor(MODEL_PATH)
+
+    # Load from disk
+    # model = ModelPredictor('models/model.pkl')
+    # units = model.predict_units(custom_example)
+
+    # print(f"Model predicts {units} units.")
+
+    # Load from MLFlow
+    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
+    mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
+
+    model_uri = f"models:/{MODEL_NAME}/{MODEL_VERSION}"
+    model = ModelPredictor(model_path=model_uri, use_mlflow=True)
     units = model.predict_units(custom_example)
 
-    print(f"Model predicts {units} units.")
+    print(f"MLFlow model forecasts {units} units.")
