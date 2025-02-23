@@ -1,10 +1,22 @@
-![Build Status](https://dev.azure.com/data-science-lab/test/_apis/build/status/data-science-lab.mle_forecasting?branchName=master)
 
-# mle_forecasting
+# MLE forecasting
 
 A MLE project that implements a forecasting model.
 
-## Setup
+## TODO
+
+- [x] Refactor code from notebook into modules: preprocess.py, train.py, & predict.py.
+- [x] Set up mlflow tracking in train.py.
+- [x] Create API in api.py to serve the model.
+- [ ] Add logic in predict.py to load model from mlflow model registry.
+- [x] Create docker-container to serve mlflow.
+- [x] Create docker-container to train model and register model to mlflow.
+- [ ] Create docker-container for api.py.
+- [ ] Add some model monitoring.
+- [ ] Orchestration/ Automatic retrain?
+- [ ] Think about CI/CD and dev -> main environments.
+
+## Setup for development
 
 Anaconda environment:
 ```
@@ -21,10 +33,13 @@ pre-commit run --all-files
 
 ## Usage
 
-*describe how to run the scripts*
-- Pre-processing: ???
-- Training: ???
-- Run tests: `python -m pytest --junitxml=junit/test-results.xml --cov=$src --cov-report xml`
+This project consists of multiple docker containers. You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
+
+```
+docker compose -f docker-compose.yml up --build
+```
+
+
 - Running the API: `uvicorn src.api:app --reload`
 
 ## Deployment
@@ -33,44 +48,3 @@ pre-commit run --all-files
   - manually using the gui
 - Run the pipeline, this should at least run linters and pytest
 
-# Project Organization
-
-    ├── data
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── src                <- Source code for use in this project.
-    │   └── __init__.py    <- Makes src a Python module
-    │
-    ├── tests              <- Test scripts
-    │    
-    ├── .dockerignore      <- Definition of files to ignore in the docker image
-    │    
-    ├── .env               <- for setting up environment variables to use in your code
-    │
-    ├── .gitignore         <- to specify which files should be ignored for git
-    │
-    ├── azure-pipelines.yml <- The CI/CD pipeline script for Azure Pipelines
-    │
-    ├── README.md          <- The top-level README for developers using this project.
-    │                       generated with `pip freeze > requirements.txt`
-    │
-    └── pyproject.toml     <- Configuration file that specifies the project's metadata, 
-    │                         dependencies, and setup options for packaging tools.
-    │                         Includes configurations for linters, formatters, and more.
-    │
-    └── .pre-commit-config.yml  <- Configuration file for pre-commit hooks to automate code quality checks
-    │                             such as linting, formatting, and tests.
-    │                             Ensures all code meets style standards before commits.
-    │
-    └── Dockerfile         <- for setting up environment variables to use in your code
-
-
---------
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
