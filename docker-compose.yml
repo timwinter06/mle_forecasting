@@ -33,3 +33,18 @@ services:
       - mlflow_server
     ports:
       - "9696:9696"
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile.api
+    container_name: api
+    networks:
+      - internal
+    environment:
+      MLFLOW_TRACKING_URI: "http://mlflow_server:5050"
+    depends_on:
+      - mlflow_server
+      # - train
+    ports:
+      - "8000:8000"
