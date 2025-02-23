@@ -8,8 +8,8 @@ services:
   mlflow_server:
     restart: always
     build:
-      context: .
-      dockerfile: Dockerfile-mlflow
+      context: docker/mlflow
+      dockerfile: Dockerfile.mlflow
     container_name: mlflow_server
     networks:
       - internal
@@ -20,12 +20,12 @@ services:
   train:
     build:
       context: .
-      dockerfile: Dockerfile.train
+      dockerfile: docker/train/Dockerfile.train
     container_name: train
     networks:
       - internal
     environment:
-      MLFLOW_TRACKING_URI: "http://0.0.0.0:5050"
+      MLFLOW_TRACKING_URI: "http://mlflow_server:5050"
     # volumes:
     #   - ./src:/app/src
     #   - ./data:/app/data
