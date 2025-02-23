@@ -1,7 +1,6 @@
 """Module for making predictions."""
 
 import math
-import os
 import pickle
 from typing import Dict
 
@@ -11,7 +10,7 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 # from settings import MODEL_PATH
-from settings import MODEL_NAME, MODEL_VERSION
+from settings import MLFLOW_TRACKING_URI, MODEL_URI
 
 
 class ModelPredictor:
@@ -25,6 +24,7 @@ class ModelPredictor:
             use_mlflow (bool, optional): Whether to use MLflow. Defaults to False.
         """
         if use_mlflow:
+            mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
             self.model = mlflow.sklearn.load_model(model_path)
         else:
             with open(model_path, "rb") as file:
@@ -100,11 +100,7 @@ if __name__ == "__main__":
     # print(f"Model predicts {units} units.")
 
     # Load from MLFlow
-    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
-    mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
-
-    model_uri = f"models:/{MODEL_NAME}/{MODEL_VERSION}"
-    model = ModelPredictor(model_path=model_uri, use_mlflow=True)
+    model = ModelPredictor(model_path=MODEL_URI, use_mlflow=True)
     units = model.predict_units(custom_example)
 
     print(f"MLFlow model forecasts {units} units.")

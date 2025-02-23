@@ -2,7 +2,6 @@
 
 import logging
 import math
-import os
 import pickle
 from typing import Dict
 
@@ -15,7 +14,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from preprocess import Preprocesser
-from settings import DATA_PATH, EXPERIMENT_NAME
+from settings import DATA_PATH, EXPERIMENT_NAME, MLFLOW_TRACKING_URI, MODEL_NAME
 
 logging.basicConfig(level=logging.INFO)
 
@@ -110,12 +109,11 @@ def track_with_mlflow(
             sk_model=model,
             artifact_path="forecast_model",
             signature=signature,
-            registered_model_name="random_forest_regressor",
+            registered_model_name=MODEL_NAME,
         )
 
 
 if __name__ == "__main__":
-    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
     logging.info(f"MLFLOW_TRACKING_URI: {MLFLOW_TRACKING_URI}")
     mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
     mlflow.set_experiment(EXPERIMENT_NAME)
@@ -133,7 +131,7 @@ if __name__ == "__main__":
 
     logging.info("Evaluating model...")
     metrics = model_trainer.evaluate(test_x, test_y)
-    print(metrics)
+    logging.info(f"Metrics: {metrics}")
 
     logging.info("Tracking model with MLflow...")
     track_with_mlflow(model_trainer.model, params, metrics, train_x)

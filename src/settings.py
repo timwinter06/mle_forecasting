@@ -1,5 +1,7 @@
 """Module for commonly used variables."""
 
+import os
+
 # Paths
 DATA_PATH = "./data/raw/dataset.csv"
 MODEL_PATH = "./models/forecasting_model.pkl"
@@ -12,6 +14,8 @@ FEATURE_TO_LAG = "UnitSales"
 EXPERIMENT_NAME = "unit_sales_forecasting"
 MODEL_NAME = "random_forest_regressor"
 MODEL_VERSION = "latest"
+MODEL_URI = f"models:/{MODEL_NAME}/{MODEL_VERSION}"
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5050")
 
 # Data columns
 COLUMNS = [

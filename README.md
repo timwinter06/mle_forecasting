@@ -8,7 +8,7 @@ A MLE project that implements a forecasting model.
 - [x] Refactor code from notebook into modules: preprocess.py, train.py, & predict.py.
 - [x] Set up mlflow tracking in train.py.
 - [x] Create API in api.py to serve the model.
-- [ ] Add logic in predict.py to load model from mlflow model registry.
+- [x] Add logic in predict.py to load model from mlflow model registry.
 - [x] Create docker-container to serve mlflow.
 - [x] Create docker-container to train model and register model to mlflow.
 - [ ] Create docker-container for api.py.
