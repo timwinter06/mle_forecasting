@@ -39,6 +39,8 @@ This project consists of multiple docker containers. You can start all container
 docker compose -f docker-compose.yml up --build
 ```
 
+MLFlow: http://localhost:5050/
+
 
 - Running the API: `uvicorn src.api:app --reload`
 
