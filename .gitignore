@@ -86,3 +86,10 @@ target/
 
 # git-setup.sh file
 git-setup.sh
+
+# Pickle files
+*.pkl
+
+# Exclude all mlflow stuff
+mlruns
+mlartifacts

@@ -1,0 +1,35 @@
+version: '3.8'
+
+networks:
+  internal:
+    driver: bridge
+
+services:
+  mlflow_server:
+    restart: always
+    build:
+      context: docker/mlflow
+      dockerfile: Dockerfile.mlflow
+    container_name: mlflow_server
+    networks:
+      - internal
+    image: mlflow_server
+    ports:
+      - "5050:5050"
+
+  train:
+    build:
+      context: .
+      dockerfile: docker/train/Dockerfile.train
+    container_name: train
+    networks:
+      - internal
+    environment:
+      MLFLOW_TRACKING_URI: "http://mlflow_server:5050"
+    # volumes:
+    #   - ./src:/app/src
+    #   - ./data:/app/data
+    depends_on:
+      - mlflow_server
+    ports:
+      - "9696:9696"
