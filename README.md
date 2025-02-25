@@ -14,22 +14,30 @@ A MLE project that implements a forecasting model.
 - [x] Create docker-container for api.py.
 - [ ] Add some model monitoring.
 - [x] Orchestration of training
-- [ ] Setting a schedule for retraining
+- [ ] Set a schedule for retraining
 - [ ] Automatic retraining based on drift
 - [ ] Think about CI/CD, promoting models, dev -> main environments.
 - [ ] Unit tests, integration tests.
+- [ ] Mount volume to mflow?
 - [ ] Set up S3 & postgres for better storage management.
 
 
 ## Usage
 
-This project consists of multiple docker containers. You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
+This project consists of multiple services that run in docker-containers. These are as follows:
+
+1. A training pipeline orchestrated by Prefect (check the Prefect UI to monitor this).
+2. MLFlow UI to check the training parameters, metrics, and registered models.
+3. A Prefect UI to monitor the training pipeline.
+4. A fast-API prediction endpoint to make predictions with your model. NOTE: there is a `wait_for_mlflow.py` script that checks if the model has been registered before starting the API.
+
+You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
 
 ```
 docker compose up --build
 ```
 
-You can rach the different services here:
+You can reach the different services here:
 
 - MLFlow: http://localhost:5050/
 - Prefect: http://localhost:4200/
