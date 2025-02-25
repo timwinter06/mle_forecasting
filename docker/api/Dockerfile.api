@@ -15,4 +15,4 @@ EXPOSE 8000
 # Set PYTHONPATH so Python can find "src.api"
 ENV PYTHONPATH=/app
 
-CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD python /app/src/wait_for_mlflow.py && uvicorn src.main:app --host 0.0.0.0 --port 8000

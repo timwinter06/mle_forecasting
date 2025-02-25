@@ -11,6 +11,9 @@ from preprocess import Preprocesser
 from settings import DATA_PATH, EXPERIMENT_NAME, MLFLOW_TRACKING_URI, N_ESTIMATORS
 from train import RFModelTrainer, track_with_mlflow
 
+logging.basicConfig(level=logging.INFO)
+logging.info("Initializing train flow")
+
 
 @task
 def load_data() -> Tuple[pd.DataFrame]:
