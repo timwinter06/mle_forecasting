@@ -17,20 +17,22 @@ services:
     ports:
       - "5050:5050"
 
-  train:
+  train_flow:
     build:
       context: .
-      dockerfile: docker/train/Dockerfile.train
-    container_name: train
+      dockerfile: docker/train_flow/Dockerfile.train_flow
+    container_name: train_flow
     networks:
       - internal
     environment:
       MLFLOW_TRACKING_URI: "http://mlflow_server:5050"
+      PREFECT_API_URL: "http://prefect_server_ui:4200/api"
     # volumes:
     #   - ./src:/app/src
     #   - ./data:/app/data
     depends_on:
       - mlflow_server
+      - prefect_server_ui
     ports:
       - "9696:9696"
 
@@ -45,12 +47,15 @@ services:
       MLFLOW_TRACKING_URI: "http://mlflow_server:5050"
     depends_on:
       - mlflow_server
-      # - train
+      - train_flow
     ports:
       - "8000:8000"
 
-  prefect:
+  prefect_server_ui:
     image: prefecthq/prefect:3-python3.11
+    container_name: prefect_server_ui
+    networks:
+      - internal
     environment:
       PREFECT_HOME: /data
     command: prefect server start --host 0.0.0.0
