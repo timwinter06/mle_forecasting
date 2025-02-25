@@ -11,10 +11,30 @@ A MLE project that implements a forecasting model.
 - [x] Add logic in predict.py to load model from mlflow model registry.
 - [x] Create docker-container to serve mlflow.
 - [x] Create docker-container to train model and register model to mlflow.
-- [ ] Create docker-container for api.py.
+- [x] Create docker-container for api.py.
 - [ ] Add some model monitoring.
-- [ ] Orchestration/ Automatic retrain?
-- [ ] Think about CI/CD and dev -> main environments.
+- [x] Orchestration of training
+- [ ] Setting a schedule for retraining
+- [ ] Automatic retraining based on drift
+- [ ] Think about CI/CD, promoting models, dev -> main environments.
+- [ ] Unit tests, integration tests.
+- [ ] Set up S3 & postgres for better storage management.
+
+
+## Usage
+
+This project consists of multiple docker containers. You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
+
+```
+docker compose up --build
+```
+
+You can rach the different services here:
+
+- MLFlow: http://localhost:5050/
+- Prefect: http://localhost:4200/
+- Prediction-API: http://localhost:8000/
+
 
 ## Setup for development
 
@@ -31,18 +51,6 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-## Usage
-
-This project consists of multiple docker containers. You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
-
-```
-docker compose -f docker-compose.yml up --build
-```
-
-MLFlow: http://localhost:5050/
-
-
-- Running the API: `uvicorn src.api:app --reload`
 
 ## Deployment
 
