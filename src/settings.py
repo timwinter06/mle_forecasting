@@ -12,7 +12,7 @@ FEATURE_TO_LAG = "UnitSales"
 N_ESTIMATORS = 100
 
 # MLFlow settings
-EXPERIMENT_NAME = "unit_sales_forecasting"
+EXPERIMENT_NAME = "forecasting_model_unit_sales"
 MODEL_NAME = "random_forest_regressor"
 MODEL_VERSION = "latest"
 MODEL_URI = f"models:/{MODEL_NAME}/{MODEL_VERSION}"
