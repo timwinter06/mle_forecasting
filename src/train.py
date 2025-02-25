@@ -14,7 +14,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from preprocess import Preprocesser
-from settings import DATA_PATH, EXPERIMENT_NAME, MLFLOW_TRACKING_URI, MODEL_NAME
+from settings import DATA_PATH, EXPERIMENT_NAME, MLFLOW_TRACKING_URI, MODEL_NAME, N_ESTIMATORS
 
 logging.basicConfig(level=logging.INFO)
 
@@ -89,12 +89,12 @@ class RFModelTrainer:
 
 
 def track_with_mlflow(
-    model: RFModelTrainer, params: Dict[str, int], metrics: Dict[str, float], x_train: pd.DataFrame
+    model: RandomForestRegressor, params: Dict[str, int], metrics: Dict[str, float], x_train: pd.DataFrame
 ) -> None:
     """Track the model with MLflow.
 
     Args:
-        model (RFModelTrainer): The model to track.
+        model (RandomForestRegressor): The model to track.
         params (Dict[str, int]): The parameters to track.
         metrics (Dict[str, float]): The metrics to track.
     """
@@ -123,7 +123,11 @@ if __name__ == "__main__":
     train_x, train_y, test_x, test_y = preprocesser()
 
     logging.info("Training model...")
-    params = {"n_estimators": 100, "max_features": round(len(train_x.columns) / 3), "max_depth": len(train_x.columns)}
+    params = {
+        "n_estimators": N_ESTIMATORS,
+        "max_features": round(len(train_x.columns) / 3),
+        "max_depth": len(train_x.columns),
+    }
     model_trainer = RFModelTrainer(
         n_estimators=params["n_estimators"], max_features=params["max_features"], max_depth=params["max_depth"]
     )
