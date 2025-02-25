@@ -40,7 +40,7 @@ def train_model(train_x: pd.DataFrame, train_y: pd.DataFrame, params: dict) -> R
     logging.info("Training model...")
     model_trainer = RFModelTrainer(**params)
     model_trainer.train(train_x, train_y)
-    return model_trainer, params
+    return model_trainer
 
 
 @task
@@ -93,4 +93,5 @@ def train_flow():
 
 
 if __name__ == "__main__":
+    # To run locally you need to run this cmd: prefect config set PREFECT_API_URL=http://0.0.0.0:4200/api
     train_flow()
