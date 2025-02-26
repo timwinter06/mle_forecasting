@@ -12,9 +12,11 @@ A MLE project that implements a forecasting model.
 - [x] Create docker-container to serve mlflow.
 - [x] Create docker-container to train model and register model to mlflow.
 - [x] Create docker-container for api.py.
-- [ ] Add some model monitoring.
+- [x] Add some model monitoring.
 - [x] Orchestration of training
-- [ ] Set a schedule for retraining
+- [x] Set a schedule for retraining
+- [ ] Create a batch predict endpoint.
+- [ ] Log batch input and output in API, so that the drift-detector can read this data.
 - [ ] Automatic retraining based on drift
 - [ ] Think about CI/CD, promoting models, dev -> main environments.
 - [ ] Unit tests, integration tests.
@@ -30,6 +32,7 @@ This project consists of multiple services that run in docker-containers. These 
 2. MLFlow UI to check the training parameters, metrics, and registered models.
 3. A Prefect UI to monitor the training pipeline.
 4. A fast-API prediction endpoint to make predictions with your model. NOTE: there is a `wait_for_mlflow.py` script that checks if the model has been registered before starting the API.
+5. A drift-detection pipeline that runs every 5 minutes. This is a dummy pipeline that detects drift on simulated drifted production data. In future, this should read in data from the predict-API. 
 
 You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
 
@@ -58,11 +61,3 @@ Next install your pre-commit hooks:
 pre-commit install
 pre-commit run --all-files
 ```
-
-
-## Deployment
-
-- Create new Build pipeline, based on the `azure-pipelines.yml` script
-  - manually using the gui
-- Run the pipeline, this should at least run linters and pytest
-
