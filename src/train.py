@@ -2,7 +2,6 @@
 
 import logging
 import math
-import os
 import pickle
 from typing import Dict
 
@@ -15,7 +14,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 from preprocess import Preprocesser
-from settings import DATA_PATH, EXPERIMENT_NAME
+from settings import DATA_PATH, EXPERIMENT_NAME, MLFLOW_TRACKING_URI, MODEL_NAME, N_ESTIMATORS
 
 logging.basicConfig(level=logging.INFO)
 
@@ -90,12 +89,12 @@ class RFModelTrainer:
 
 
 def track_with_mlflow(
-    model: RFModelTrainer, params: Dict[str, int], metrics: Dict[str, float], x_train: pd.DataFrame
+    model: RandomForestRegressor, params: Dict[str, int], metrics: Dict[str, float], x_train: pd.DataFrame
 ) -> None:
     """Track the model with MLflow.
 
     Args:
-        model (RFModelTrainer): The model to track.
+        model (RandomForestRegressor): The model to track.
         params (Dict[str, int]): The parameters to track.
         metrics (Dict[str, float]): The metrics to track.
     """
@@ -105,17 +104,16 @@ def track_with_mlflow(
         mlflow.set_tag("Forecast model", "Random Forest")
 
         signature = infer_signature(x_train, model.predict(x_train))
+        # Log model
         _ = mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="forecast_model",
             signature=signature,
-            input_example=x_train,
-            registered_model_name="random_forest_regressor",
+            registered_model_name=MODEL_NAME,
         )
 
 
 if __name__ == "__main__":
-    MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
     logging.info(f"MLFLOW_TRACKING_URI: {MLFLOW_TRACKING_URI}")
     mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
     mlflow.set_experiment(EXPERIMENT_NAME)
@@ -125,7 +123,11 @@ if __name__ == "__main__":
     train_x, train_y, test_x, test_y = preprocesser()
 
     logging.info("Training model...")
-    params = {"n_estimators": 100, "max_features": round(len(train_x.columns) / 3), "max_depth": len(train_x.columns)}
+    params = {
+        "n_estimators": N_ESTIMATORS,
+        "max_features": round(len(train_x.columns) / 3),
+        "max_depth": len(train_x.columns),
+    }
     model_trainer = RFModelTrainer(
         n_estimators=params["n_estimators"], max_features=params["max_features"], max_depth=params["max_depth"]
     )
@@ -133,7 +135,7 @@ if __name__ == "__main__":
 
     logging.info("Evaluating model...")
     metrics = model_trainer.evaluate(test_x, test_y)
-    print(metrics)
+    logging.info(f"Metrics: {metrics}")
 
     logging.info("Tracking model with MLflow...")
     track_with_mlflow(model_trainer.model, params, metrics, train_x)

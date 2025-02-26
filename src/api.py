@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
 from predict import ModelPredictor
-from settings import COLUMNS, MODEL_PATH
+from settings import COLUMNS, MODEL_URI
 from utils.schemas import PredictionRequest
 
 logging.basicConfig(level=logging.INFO)
@@ -18,7 +18,7 @@ logging.info("Initializing API")
 app = FastAPI(title="Forecasting API", description="Simple API to forecast units.", version="0.1.0")
 
 logging.info("Initializing model predictor")
-predictor = ModelPredictor(MODEL_PATH)
+predictor = ModelPredictor(MODEL_URI, use_mlflow=True)
 
 
 @app.get("/", include_in_schema=False)

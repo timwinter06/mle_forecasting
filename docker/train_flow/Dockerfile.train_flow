@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install git
+RUN apt-get update && apt-get install -y git
+
+COPY docker/train_flow/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src/ src/
+COPY data/raw/dataset.csv data/raw/dataset.csv
+
+CMD bash -c "prefect config set PREFECT_API_URL=$PREFECT_API_URL && python src/train_flow.py"
