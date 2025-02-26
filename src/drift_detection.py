@@ -16,9 +16,10 @@ from prefect import flow, task
 from preprocess import Preprocesser
 from settings import DATA_PATH, MLFLOW_TRACKING_URI
 
+# TODO: Retrieve latest data from predict-API
 # @task
 # def collect_latest_predictions():
-#     response = requests.get("http://fast_api_model:8000/predict_logs")  # Endpoint for recent predictions
+#     response = requests.get("http://localhost:8000/predict_logs")
 #     return pd.DataFrame(response.json())
 
 
@@ -84,4 +85,5 @@ def detect_drift_flow():
 if __name__ == "__main__":
     mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
     mlflow.set_experiment("Drift detection")
+    # Run every 5 minutes
     detect_drift_flow().serve(name="drift-detection", cron="*/5 * * * *")
