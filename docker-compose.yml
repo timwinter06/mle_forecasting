@@ -65,5 +65,23 @@ services:
       - prefect-data:/data  # Persistent storage
       - .:/app  # Mount current directory
 
+  drift_detection:
+    build:
+      context: .
+      dockerfile: docker/drift_detection/Dockerfile.drift
+    container_name: drift_detection
+    networks:
+      - internal
+    environment:
+      MLFLOW_TRACKING_URI: "http://mlflow_server:5050"
+      PREFECT_API_URL: "http://prefect_server_ui:4200/api"
+    depends_on:
+      - mlflow_server
+      - prefect_server_ui
+      - train_flow
+      - api
+    ports:
+      - "9090:9090"
+
 volumes:
   prefect-data: {}

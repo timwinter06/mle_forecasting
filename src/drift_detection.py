@@ -78,7 +78,6 @@ def detect_drift_flow():
     """Prefect flow that detects data drift using Evidently."""
     ref_data = load_ref_data()
     new_data = simulate_drift(ref_data)
-    ref_data = load_ref_data()
     detect_drift(new_data, ref_data)
 
 
@@ -86,4 +85,4 @@ if __name__ == "__main__":
     mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
     mlflow.set_experiment("Drift detection")
     # Run every 5 minutes
-    detect_drift_flow().serve(name="drift-detection", cron="*/5 * * * *")
+    detect_drift_flow.serve(name="drift-detection", cron="*/5 * * * *")
