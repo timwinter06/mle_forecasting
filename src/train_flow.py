@@ -97,4 +97,5 @@ def train_flow():
 
 if __name__ == "__main__":
     # To run locally you need to run this cmd: prefect config set PREFECT_API_URL=http://0.0.0.0:4200/api
-    train_flow()
+    # Schedule to run every Sunday at 00:00
+    train_flow.serve(name="train-flow", cron="0 0 * * 0")
