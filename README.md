@@ -1,9 +1,10 @@
 
 # MLE forecasting
 
-A MLE project that implements a forecasting model.
+This repo consists of code that trains a model that forecasts the Unit Sales one week ahead in case of a promotion or no-promotion on an article level. The training is scheduled to run weekly orchestrated by prefect. Model metrics and hyperparameters are logged to MLFlow for each run and the model is registered in the model registry. The trained model is deployed to Fast-API which has an endpoint with whiich you can request predictions for single records. There is also a (dummy) drift-detection pipeline (again orchestrated by prefect) in place which runs an automated drift-detection with Evidently ona the training data and a simulated drift dataset. Drift metrics are now logged to MLFlow under the 'Drift Detection' experiment. In future work, this pipeline should request the real production data from the predict API to perform automated drift detections.
 
-## TODO
+
+## Plan & todos
 
 - [x] Refactor code from notebook into modules: preprocess.py, train.py, & predict.py.
 - [x] Set up mlflow tracking in train.py.
@@ -28,7 +29,7 @@ A MLE project that implements a forecasting model.
 
 This project consists of multiple services that run in docker-containers. These are as follows:
 
-1. A training pipeline orchestrated by Prefect (check the Prefect UI to monitor this).
+1. A training pipeline orchestrated by Prefect to run every Sunday at midnight (check the Prefect UI to monitor this).
 2. MLFlow UI to check the training parameters, metrics, and registered models.
 3. A Prefect UI to monitor the training pipeline.
 4. A fast-API prediction endpoint to make predictions with your model. NOTE: there is a `wait_for_mlflow.py` script that checks if the model has been registered before starting the API.
