@@ -85,4 +85,4 @@ if __name__ == "__main__":
     mlflow.set_tracking_uri(uri=MLFLOW_TRACKING_URI)
     mlflow.set_experiment("Drift detection")
     # Run every 5 minutes
-    detect_drift_flow.serve(name="drift-detection", cron="*/5 * * * *")
+    detect_drift_flow.serve(name="drift-detection", cron="*/10 * * * *")
