@@ -24,7 +24,7 @@ from settings import DATA_PATH, MLFLOW_TRACKING_URI
 
 
 def simulate_drift(data: pd.DataFrame) -> pd.DataFrame:
-    """Simulate data drift by multiplying the ShelfCapacity by a random number between 0.4 and 0.6.
+    """Simulate data drift by multiplying the ShelfCapacity by a random number between 0.0 and 0.2.
 
     Also shuffles the data.
     Args:
@@ -33,10 +33,11 @@ def simulate_drift(data: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: The data with simulated drift.
     """
-    data["ShelfCapacity"] = data["ShelfCapacity"].apply(lambda x: x * np.random.uniform(0.4, 0.6))
+    data_new = data.copy()
+    data_new["ShelfCapacity"] = data_new["ShelfCapacity"].apply(lambda x: x * np.random.uniform(0.4, 0.6))
 
-    data = data.sample(frac=1).reset_index(drop=True)
-    return data
+    data_new = data_new.sample(frac=1).reset_index(drop=True)
+    return data_new
 
 
 @task
