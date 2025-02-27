@@ -1,4 +1,4 @@
-""" "Prefect flow for training a random forest regression model."""
+"""Prefect flow for training a random forest regression model."""
 
 import logging
 from typing import Tuple

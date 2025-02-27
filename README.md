@@ -68,11 +68,12 @@ This project consists of multiple services that run in docker-containers. These 
 4. A fast-API prediction endpoint to make predictions with your model. NOTE: there is a `wait_for_mlflow.py` script that checks if the model has been registered before starting the API.
 5. A drift-detection pipeline that runs every 10 minutes. This is a dummy pipeline that detects drift on simulated drifted production data. In future, this should read in data from the predict-API. 
 
-You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!):
+You can start all containers by running the docker-compose file (NOTE: you need to place the dataset.csv in the 'data/raw/' folder!) :
 
 ```
 docker compose up --build
 ```
+(NOTE: older docker version: `docker-compose up --build`)
 
 You can reach the different services here:
 
