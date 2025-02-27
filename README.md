@@ -62,3 +62,7 @@ Next install your pre-commit hooks:
 pre-commit install
 pre-commit run --all-files
 ```
+
+
+### Testing
+This is still WIP, but there is one testing module for the preprocessing.py module. These tests can be run by running `pytest` in the command prompt.
