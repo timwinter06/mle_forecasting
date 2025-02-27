@@ -1,9 +1,11 @@
+"""Module for testing the Preprocesser class."""
+
 from io import StringIO
 
 import pandas as pd
 import pytest
 
-from preprocess import Preprocesser  # Assuming the module is named preprocesser.py
+from preprocess import Preprocesser
 
 # Sample CSV data
 CSV_DATA = """DateKey;StoreCount;ShelfCapacity;PromoShelfCapacity;IsPromo;ItemNumber;CategoryCode;GroupCode;UnitSales
